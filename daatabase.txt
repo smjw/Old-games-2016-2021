@@ -1,0 +1,89 @@
+CREATE DATABASE exams_sophia
+
+CREATE TABLE IF NOT EXISTS students(
+	student_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	first_name VARCHAR(20) NOT NULL,
+	middle_name VARCHAR(20),
+	last_name VARCHAR(40) NOT NULL,
+	email VARCHAR(60) NOT NULL,
+	password CHAR(40) NOT NULL,
+	reg_date DATETIME NOT NULL,
+	PRIMARY KEY (student_id),
+	UNIQUE (email));
+
+
+
+INSERT INTO `students`(`student_id`, `first_name`, `middle_name`, `last_name`, `email`, `password`, `reg_date`) VALUES ('0001','Sophia','MJ','Williams','sophia@yahoo.com','abc123','01.01.2019');
+
+INSERT INTO `students`(`student_id`, `first_name`, `middle_name`, `last_name`, `email`, `password`, `reg_date`) VALUES ('0002','Wiktoria','Mary','Szram','wik@gmail.com','abc123','01.01.2019');
+
+INSERT INTO `students`(`student_id`, `first_name`, `middle_name`, `last_name`, `email`, `password`, `reg_date`) VALUES ('0003','Alex','Fernando','Sousa','alex@gmail','abc123','01.01.2019');
+
+INSERT INTO `students`(`student_id`, `first_name`, `middle_name`, `last_name`, `email`, `password`, `reg_date`) VALUES ('0004','Roan','James','Hutch','roan@gmail','abc123','01.01.2019');
+
+INSERT INTO `students`(`student_id`, `first_name`, `middle_name`, `last_name`, `email`, `password`, `reg_date`) VALUES ('0005','Marcin','Guy','Gil','marcin@gmail','abc123','01.01.2019');
+
+
+
+
+CREATE TABLE IF NOT EXISTS subjects(
+    subject_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    subject_name VARCHAR(20) NOT NULL,
+    entry_level VARCHAR(20) NOT NULL,
+    examboard VARCHAR(20) NOT NULL,
+    PRIMARY KEY (subject_id));
+
+INSERT INTO `subjects`(`subject_id`, `subject_name`, `entry_level`, `examboard`) VALUES ('0001','Chemistry','AS','OCR')
+
+INSERT INTO `subjects`(`subject_id`, `subject_name`, `entry_level`, `examboard`) VALUES ('0002','Biology','GCSE','AQA'),
+('0003','Music','GCSE','Edexcel'),
+('0004','English','A','OCR'),
+('0005','Physics','A','AQA'),
+('0006','Computing','A','OCR'),
+('0007','Maths','GCSE','Edexcel'),
+('0008','Art','AS','AQA'),
+('0009','Spanish','GCSE','AQA'),
+('0010','French','GCSE','AQA');
+
+
+SELECT examboard, COUNT(*)
+FROM subjects
+GROUP BY examboard
+
+
+
+CREATE TABLE IF NOT EXISTS entries(
+	entry_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    	student_id INT UNSIGNED NOT NULL,
+	subject_id INT UNSIGNED NOT NULL,
+    	exam_date  DATETIME NOT NULL,
+    	PRIMARY KEY(entry_id),
+    	FOREIGN KEY(student_id) REFERENCES students(student_id),
+    	FOREIGN KEY(subject_id) REFERENCES subjects(subject_id));
+
+
+
+INSERT INTO `entries`(`entry_id`, `student_id`, `subject_id`, `exam_date`) VALUES ('0001','0001','0001','02.01.2019'),
+('0002','0002','0001','02.01.2019'),
+('0003','0003','0006','02.01.2019'),
+('0004','0004','0006','02.01.2019'),
+('0005','0001','0004','02.02.2019'),
+('0006','0005','0004','02.02.2019'),
+('0007','0003','0002','02.01.2019'),
+('0008','0001','0005','02.01.2019');
+
+
+
+SELECT students.first_name, students.last_name, subjects.examboard
+FROM entries
+INNER JOIN students ON entries.student_id=students.student_id
+INNER JOIN subjects ON entries.subject_id=subjects.subject_id
+WHERE examboard="OCR";
+
+
+
+SELECT subjects.subject_name, subjects.entry_level, entries.entry_id, entries.exam_date, students.first_name, students.last_name
+FROM entries
+INNER JOIN subjects ON subjects.subject_id=entries.subject_id
+INNER JOIN students ON students.student_id=entries.student_id;
+ODER BY last_name
